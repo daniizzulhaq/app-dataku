@@ -232,8 +232,8 @@ try {
     assert.ok(Math.abs(layout.qr.x-183.5)<.2 && Math.abs(layout.qr.y-32.5)<.2 && Math.abs(layout.qrWidth-20)<.1);
     assert.ok(Math.abs(layout.qrCaptionFont-9.5)<.08, 'Text beneath QR must scale with the 10pt font');
     assert.ok(Math.abs(layout.approval.x-165.05)<.2 && Math.abs(layout.approval.y-10)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9)<.08);
-    assert.ok(Math.abs(layout.bottom.x-209)<.3 && Math.abs(layout.expiry.x-199.5)<.3 && layout.expiry.y>74.8 && layout.expiry.y<75.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-10.5)<.08, 'Full date must move down 1mm from the raised position');
-    assert.ok(Math.abs(layout.location.x-220.5)<.3 && Math.abs(layout.location.y-layout.bottom.y+3)<.3, 'Location code must move another 2.5mm right');
+    assert.ok(Math.abs(layout.bottom.x-212)<.3 && Math.abs(layout.expiry.x-202.5)<.3 && layout.expiry.y>74.8 && layout.expiry.y<75.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-10.5)<.08, 'Date and code must move 3mm right without changing their vertical positions');
+    assert.ok(Math.abs(layout.location.x-223.5)<.3 && Math.abs(layout.location.y-layout.bottom.y+3)<.3, 'Location code must move another 3mm right with the date');
     assert.equal(await cdp.evaluate('document.querySelector(".document-expiry dd").textContent'),'04 November 2031');
     assert.equal(await cdp.evaluate('document.querySelector("[data-field=tanggal_penerbitan]") === null'),true);
     assert.equal(await cdp.evaluate('document.body.classList.contains("print-overflow")'),false);

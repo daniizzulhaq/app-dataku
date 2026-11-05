@@ -96,10 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ? [...content.querySelectorAll('.document-owner .document-value dd')].some(value =>
                 layoutTop(value) + value.offsetHeight > layoutTop(firstSpecification) - 2)
             : false;
+        // Tanggal dan kode boleh melewati lebar bidang dasar; outsideSlot tetap memeriksa batas kertas.
         const overflows = () => ownerOverlapsSpecifications || outsideSlot() || content.scrollHeight > content.clientHeight + 1
-            || content.scrollWidth > content.clientWidth + 1
             || columns.scrollHeight > columns.clientHeight + 1
-            || columns.scrollWidth > columns.clientWidth + 1
             || (approval && reference && layoutTop(approval) + approval.offsetHeight > layoutTop(reference) - 4)
             || [...content.querySelectorAll('.document-owner, .document-column')].some(column => column.scrollHeight > column.clientHeight + 1);
         fits = !overflows();

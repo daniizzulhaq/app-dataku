@@ -96,7 +96,7 @@
     display:block;
     text-align:right;
 }
-.document-admin-bottom{position:absolute;right:var(--expiry-x-adjust);bottom:2mm;width:21mm;margin:0;text-align:center}
+.document-admin-bottom{position:absolute;right:calc(var(--expiry-x-adjust) - 3mm);bottom:2mm;width:21mm;margin:0;text-align:center}
 .document-admin-bottom [data-field="kode_lokasi"]{top:-3mm;left:11.5mm}
 .document-value{
     position:relative;
@@ -158,7 +158,7 @@
 .internal-approval .internal-approval-content{width:fit-content;max-width:100%;margin:0;padding:0 0 .3mm;border-bottom:.2mm solid #111;font-size:.9em;font-weight:700;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere;white-space:normal}
 .internal-approval-role{display:flex;flex-wrap:wrap;justify-content:center;gap:.4mm 1mm;width:100%;font-size:1em;font-weight:700;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere}
 .internal-approval-role>span{min-width:0;max-width:100%;font:inherit;letter-spacing:normal}
-.internal-approval-role>.internal-approval-job{font-size:.9em}
+.internal-approval-role>.internal-approval-job{font-size:.8em;font-weight:400}
 .internal-approval-role>.internal-approval-nrp{font-size:.85em}
 .document-admin-summary{position:absolute;left:var(--qr-x-adjust);top:-6.5mm;min-width:0}
 .internal-reference-code{width:20mm;min-width:0;margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:0;text-align:left;break-inside:avoid}
