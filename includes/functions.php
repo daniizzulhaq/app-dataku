@@ -246,7 +246,7 @@ function format_date(?string $value): string
 function print_settings(): array
 {
     return ['paper_width_mm' => 297, 'paper_height_mm' => 230, 'document_print_height_mm' => 210,
-        'font_size_pt' => 9, 'line_height' => 1.2, 'padding_mm' => 4, 'margin_mm' => 0, 'document_raise_mm' => 10.5];
+        'font_size_pt' => 10, 'line_height' => 1.2, 'padding_mm' => 4, 'margin_mm' => 0, 'document_raise_mm' => 10.5];
 }
 
 function selected_print_position(): string
