@@ -61,12 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const rootStyle = getComputedStyle(document.documentElement);
         const base = parseFloat(rootStyle.getPropertyValue('--doc-font')) || 6;
         const baseLine = parseFloat(rootStyle.getPropertyValue('--doc-line')) || 1.2;
-        const scale = parseFloat(rootStyle.getPropertyValue('--doc-scale')) || 1;
-        // Tidak memotong teks. Turunkan font secara bertahap hanya bila konten melampaui ruang.
-        let size = base;
-        let line = baseLine;
-        documentElement.style.fontSize = `${size}pt`;
-        documentElement.style.setProperty('--doc-line', String(line));
+        // Ukuran huruf dan jarak baris tetap sama pada preview serta setiap cetakan.
+        documentElement.style.fontSize = `${base}pt`;
+        documentElement.style.setProperty('--doc-line', String(baseLine));
+        // Ukur kertas yang terlihat, termasuk setelah pemeriksaan sebelumnya gagal.
+        document.body.classList.remove('print-overflow');
         const columns = content.querySelector('.document-columns');
         const approval = content.querySelector('.document-approval');
         const reference = content.querySelector('.internal-reference-code');
@@ -92,28 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return top;
         };
-        const overflows = () => outsideSlot() || content.scrollHeight > content.clientHeight + 1
+        const firstSpecification = content.querySelector('.document-primary .document-value dd');
+        const ownerOverlapsSpecifications = firstSpecification
+            ? [...content.querySelectorAll('.document-owner .document-value dd')].some(value =>
+                layoutTop(value) + value.offsetHeight > layoutTop(firstSpecification) - 2)
+            : false;
+        const overflows = () => ownerOverlapsSpecifications || outsideSlot() || content.scrollHeight > content.clientHeight + 1
             || content.scrollWidth > content.clientWidth + 1
             || columns.scrollHeight > columns.clientHeight + 1
             || columns.scrollWidth > columns.clientWidth + 1
             || (approval && reference && layoutTop(approval) + approval.offsetHeight > layoutTop(reference) - 4)
             || [...content.querySelectorAll('.document-owner, .document-column')].some(column => column.scrollHeight > column.clientHeight + 1);
-        // Rapatkan jarak baris lebih dulu agar ukuran huruf yang dipilih tetap terbaca.
-        while (overflows() && line > 1.1) {
-            line = Math.max(1.1, Math.round((line - 0.05) * 100) / 100);
-            documentElement.style.setProperty('--doc-line', String(line));
-        }
-        while (overflows() && size > 5.5) {
-            size = Math.max(5.5, Math.round((size - 0.1) * 10) / 10);
-            documentElement.style.fontSize = `${size}pt`;
-        }
         fits = !overflows();
         document.body.classList.toggle('print-overflow', !fits);
         if (fitMessage) {
-            fitMessage.hidden = fits && size === base && line === baseLine;
-            fitMessage.textContent = !fits
-                ? 'Konten melebihi area kertas atau kolom. Cetak dinonaktifkan agar data tidak terpotong. Ringkas isian yang terlalu panjang sebelum mencetak.'
-                : `Font cetak disesuaikan menjadi ${(size * scale).toFixed(1)} pt${line < baseLine ? ' dan jarak baris dirapatkan' : ''} agar seluruh data muat. Preview dan cetakan memakai ukuran yang sama.`;
+            fitMessage.hidden = fits;
+            fitMessage.textContent = fits ? '' : ownerOverlapsSpecifications
+                ? 'Nama atau alamat terlalu panjang dan bertumpuk dengan data kendaraan. Ringkas isian tersebut sebelum mencetak; ukuran tulisan dan posisi cetak tetap.'
+                : 'Konten melebihi area kertas atau kolom. Ukuran tulisan dan jarak baris tetap. Ringkas isian yang terlalu panjang sebelum mencetak.';
         }
         printButtons.forEach(button => { button.disabled = !fits; });
         return fits;

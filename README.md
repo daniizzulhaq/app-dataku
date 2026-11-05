@@ -87,7 +87,7 @@ Di preview, halaman cetak, atau **Posisi cetak**, pilih kolom lalu klik **Terapk
 
 Percobaan perubahan ke Letter dibatalkan. Ukuran halaman aplikasi kembali **297 × 230 mm**, tanpa mengubah font 10 pt atau koreksi isian sebelumnya.
 
-Preview dan print memakai template yang sama. Penanda kolom hanya tampil di layar. Tanggal penerbitan di atas wilayah tidak ditampilkan. Bila data terlalu panjang, jarak baris dirapatkan sampai 1,1 sebelum font diturunkan; ukuran huruf hasil penyesuaian ditampilkan pada pesan. Cetak diblokir bila isian masih melewati ruang tersedia.
+Preview dan print memakai template yang sama. Penanda kolom hanya tampil di layar. Tanggal penerbitan di atas wilayah tidak ditampilkan. Ukuran huruf dan jarak baris tetap pada setiap pemeriksaan dan cetakan; data panjang tidak mengecilkan tulisan secara otomatis. Bila isian melewati ruang tersedia, cetak diblokir dengan pesan untuk meringkas isian agar data tidak terpotong.
 
 ## Struktur
 

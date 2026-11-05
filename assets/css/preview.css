@@ -15,8 +15,9 @@
     --qr-x-adjust:18mm;
     --admin-lower-space:10mm;
     --expiry-x-adjust:11.5mm;
-    --primary-y-adjust:1.5mm;
-    --secondary-y-adjust:1.5mm;
+    /* Ruang tetap untuk alamat dua baris pada ukuran cetak 10 pt. */
+    --primary-y-adjust:5mm;
+    --secondary-y-adjust:5mm;
     --owner-x:calc(var(--doc-w,230mm) * .17 + var(--layout-inset) + var(--field-x-adjust));
     --owner-y:calc(var(--doc-h,75mm) * .30 + var(--layout-inset) + 1mm);
     --specs-y:calc(var(--doc-h,75mm) * .52 + var(--layout-inset));

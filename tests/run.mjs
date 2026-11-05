@@ -199,6 +199,7 @@ try {
         };
         return {font:parseFloat(getComputedStyle(doc).fontSize)*72/96*parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-scale')),
             owner:relative(document.querySelector('.document-owner')),
+            ownerBottom:Math.max(...[...document.querySelectorAll('.document-owner .document-value dd')].map(value => relative(value).y + value.offsetHeight*25.4/96)),
             plate:relative(document.querySelector('.document-plate')),
             nik:relative(document.querySelector('.document-nik')),
             primary:relative(document.querySelector('.document-primary')),
@@ -224,8 +225,9 @@ try {
     assert.equal(await cdp.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--doc-line").trim()'), '1.20');
     assert.ok(Math.abs(layout.owner.x-55.1)<.2 && Math.abs(layout.owner.y-23.5)<.2);
     assert.ok(Math.abs(layout.nik.x-126.63)<.3 && Math.abs(layout.nik.y-24)<.2, 'NIK must retain its horizontal correction');
-    assert.ok(Math.abs(layout.primary.y-40.5)<.2 && Math.abs(layout.secondary.x-144.3)<.2 && Math.abs(layout.secondary.y-40.5)<.2);
-    assert.ok(Math.abs(layout.plate.y-24)<.2 && Math.abs(layout.merek.y-41)<.3 && Math.abs(layout.model.y-56)<.3 && Math.abs(layout.year.y-60.5)<.3, 'Both specification blocks must move up 2mm from their previous positions');
+    assert.ok(Math.abs(layout.primary.y-44)<.2 && Math.abs(layout.secondary.x-144.3)<.2 && Math.abs(layout.secondary.y-44)<.2);
+    assert.ok(Math.abs(layout.plate.y-24)<.2 && Math.abs(layout.merek.y-44.5)<.3 && Math.abs(layout.model.y-59.5)<.3 && Math.abs(layout.year.y-64)<.3, 'Both specification blocks must leave fixed space for a two-line address at 10pt');
+    assert.ok(layout.ownerBottom <= layout.merek.y-.5, 'Owner and address text must leave a visible gap before the first specification row');
     assert.ok(Math.abs(layout.primaryStep-5)<.3 && Math.abs(layout.ownerStep-5)<.3, 'Owner and specification rows must have the larger 5mm spacing');
     assert.ok(Math.abs(layout.qr.x-183.5)<.2 && Math.abs(layout.qr.y-32.5)<.2 && Math.abs(layout.qrWidth-20)<.1);
     assert.ok(Math.abs(layout.qrCaptionFont-9.5)<.08, 'Text beneath QR must scale with the 10pt font');
@@ -326,9 +328,16 @@ try {
     assert.equal((await request('update.php', long)).status, 303); await cdp.navigate('preview.php?id=' + id);
     const longFits = await cdp.evaluate('!document.body.classList.contains("print-overflow")');
     await cdp.screenshot('preview-long-text.png');
-    assert.equal(longFits,true); report('Long owner, address and type wrap without overflow');
+    assert.equal(longFits,false);
+    assert.equal(await cdp.evaluate('document.getElementById("fit-message").hidden'),false);
+    assert.ok(Math.abs(await cdp.evaluate(`parseFloat(getComputedStyle(document.querySelector('.vehicle-document')).fontSize)*72/96*parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-scale'))`) - 10)<.05);
+    assert.equal(await cdp.evaluate(`document.querySelector('.vehicle-document').style.getPropertyValue('--doc-line')`),'1.2');
+    report('Long data is flagged without changing the fixed font or line spacing');
     assert.ok(Math.abs(await cdp.evaluate(`(() => {
-        return document.querySelector('.document-primary').offsetTop*25.4/96;
+        document.body.classList.remove('print-overflow');
+        const top = document.querySelector('.document-primary').offsetTop*25.4/96;
+        document.body.classList.add('print-overflow');
+        return top;
     })()`) - layout.primary.y) < .1, 'Long address must not shift specification rows');
     response = await request('update.php', { ...fixture, csrf: authCsrf, id, version: snapshot().vehicles[0].updated_at, teks_atas_qr: '' });
     assert.equal(response.status, 303);
