@@ -14,7 +14,7 @@ if (in_array($action, ['create', 'drop'], true)) {
         $pdo->exec("CREATE DATABASE `$name` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $sql = file_get_contents(APP_ROOT . '/database/kendaraan.sql');
         $sql = preg_replace('/CREATE DATABASE IF NOT EXISTS db_kendaraan_print[^;]*;/', '', $sql);
-        $sql = str_replace('USE db_kendaraan_print;', "USE `$name`;", $sql);
+        $sql = preg_replace('/^USE\s+[^;]+;/mi', "USE `$name`;", $sql);
         $pdo->exec($sql);
     } else {
         $pdo->exec("DROP DATABASE `$name`");

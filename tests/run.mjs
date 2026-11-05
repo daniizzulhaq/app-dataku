@@ -220,7 +220,7 @@ try {
             qrCaptionFont:parseFloat(getComputedStyle(document.querySelector('.internal-reference-code>span')).fontSize)*72/96*parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-scale')),
             qrWidth:parseFloat(getComputedStyle(document.querySelector('.internal-reference-code img')).width)*25.4/96};
     })()`);
-    assert.ok(Math.abs(layout.font-8.7)<.05, 'Printed font must be 8.7pt after layout scaling');
+    assert.ok(Math.abs(layout.font-9)<.05, 'Printed font must be 9pt after layout scaling');
     assert.equal(await cdp.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--doc-line").trim()'), '1.20');
     assert.ok(Math.abs(layout.owner.x-55.1)<.2 && Math.abs(layout.owner.y-23.5)<.2);
     assert.ok(Math.abs(layout.nik.x-126.63)<.3 && Math.abs(layout.nik.y-24)<.2, 'NIK must retain its horizontal correction');
@@ -228,9 +228,9 @@ try {
     assert.ok(Math.abs(layout.plate.y-24)<.2 && Math.abs(layout.merek.y-43)<.3 && Math.abs(layout.model.y-58)<.3 && Math.abs(layout.year.y-62.5)<.3, 'Both left and right data blocks must move down another 0.5mm');
     assert.ok(Math.abs(layout.primaryStep-5)<.3 && Math.abs(layout.ownerStep-5)<.3, 'Owner and specification rows must have the larger 5mm spacing');
     assert.ok(Math.abs(layout.qr.x-183.5)<.2 && Math.abs(layout.qr.y-34.5)<.2 && Math.abs(layout.qrWidth-20)<.1);
-    assert.ok(Math.abs(layout.qrCaptionFont-8.265)<.08, 'Text beneath QR must be slightly larger');
-    assert.ok(Math.abs(layout.approval.x-165.05)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9.135)<.08);
-    assert.ok(Math.abs(layout.bottom.x-209)<.3 && Math.abs(layout.expiry.x-199.5)<.3 && layout.expiry.y>75.8 && layout.expiry.y<76.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-9.135)<.08, 'Full date must be slightly larger, higher and further right');
+    assert.ok(Math.abs(layout.qrCaptionFont-8.55)<.08, 'Text beneath QR must be slightly larger');
+    assert.ok(Math.abs(layout.approval.x-165.05)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9.45)<.08);
+    assert.ok(Math.abs(layout.bottom.x-209)<.3 && Math.abs(layout.expiry.x-199.5)<.3 && layout.expiry.y>75.8 && layout.expiry.y<76.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-9.45)<.08, 'Full date must be slightly larger, higher and further right');
     assert.ok(Math.abs(layout.location.x-215)<.3 && Math.abs(layout.location.y-layout.bottom.y+3)<.3, 'Location code must move another 1mm right');
     assert.equal(await cdp.evaluate('document.querySelector(".document-expiry dd").textContent'),'04 November 2031');
     assert.equal(await cdp.evaluate('document.querySelector("[data-field=tanggal_penerbitan]") === null'),true);
