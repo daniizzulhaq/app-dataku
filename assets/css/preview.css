@@ -155,13 +155,13 @@
 .internal-approval-region{width:100%;min-height:calc(1em * var(--doc-line,1.2));font-size:1em;font-weight:400;line-height:var(--doc-line,1.2);text-transform:uppercase;overflow-wrap:anywhere}
 .internal-approval-signature-space{position:relative;z-index:1;width:48mm;max-width:100%;height:9mm;margin-top:calc(-1em * var(--doc-line,1.2));flex-shrink:0;overflow:hidden;mix-blend-mode:multiply}
 .internal-approval-signature{position:absolute;left:0;top:-37%;width:100%;height:184%;max-width:none}
-.internal-approval .internal-approval-content{width:fit-content;max-width:100%;margin:0;padding:0 0 .3mm;border-bottom:.2mm solid #111;font-size:.9em;font-weight:700;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere;white-space:normal}
+.internal-approval .internal-approval-content{width:fit-content;max-width:100%;margin:0;padding:0 0 .3mm;border-bottom:.2mm solid #111;font-size:.9em;font-weight:400;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere;white-space:normal}
 .internal-approval-role{display:flex;flex-wrap:wrap;justify-content:center;gap:.4mm 1mm;width:100%;font-size:1em;font-weight:700;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere}
 .internal-approval-role>span{min-width:0;max-width:100%;font:inherit;letter-spacing:normal}
 .internal-approval-role>.internal-approval-job{font-size:.8em;font-weight:400}
-.internal-approval-role>.internal-approval-nrp{font-size:.85em}
+.internal-approval-role>.internal-approval-nrp{font-size:.85em;font-weight:400}
 .document-admin-summary{position:absolute;left:var(--qr-x-adjust);top:-6.5mm;min-width:0}
 .internal-reference-code{width:20mm;min-width:0;margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:0;text-align:left;break-inside:avoid}
-.internal-reference-code figcaption{width:max-content;max-width:calc(var(--doc-w,230mm) * .18);margin-bottom:1.5mm;font-size:.95em;line-height:1.2;font-weight:700;overflow-wrap:anywhere;text-align:left}
+.internal-reference-code figcaption{width:max-content;max-width:calc(var(--doc-w,230mm) * .18);margin-bottom:1.5mm;font-size:.95em;line-height:1.2;font-weight:400;overflow-wrap:anywhere;text-align:left}
 .internal-reference-code img{display:block;width:20mm;height:20mm;object-fit:contain;flex-shrink:0}
-.internal-reference-code>span{width:100%;margin-top:-.8mm;font-size:.95em;font-weight:700;line-height:1;font-family:inherit;text-align:center;white-space:nowrap}
+.internal-reference-code>span{width:100%;margin-top:-.8mm;font-size:.95em;font-weight:400;line-height:1;font-family:inherit;text-align:center;white-space:nowrap}
