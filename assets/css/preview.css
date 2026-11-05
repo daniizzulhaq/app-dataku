@@ -96,7 +96,7 @@
     text-align:right;
 }
 .document-admin-bottom{position:absolute;right:var(--expiry-x-adjust);bottom:0;width:21mm;margin:0;text-align:center}
-.document-admin-bottom [data-field="kode_lokasi"]{top:-3mm;left:6mm}
+.document-admin-bottom [data-field="kode_lokasi"]{top:-3mm;left:9mm}
 .document-value{
     position:relative;
     min-width:0;
