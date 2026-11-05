@@ -53,8 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const fitMessage = document.getElementById('fit-message');
     const printButtons = document.querySelectorAll('[data-print]');
     let fits = true;
+    let printAssetsReady = false;
     const fitDocument = () => {
         if (!documentElement) return true;
+        if (!printAssetsReady) return false;
         const content = documentElement.querySelector('.document-content');
         const rootStyle = getComputedStyle(document.documentElement);
         const base = parseFloat(rootStyle.getPropertyValue('--doc-font')) || 6;
@@ -116,12 +118,28 @@ document.addEventListener('DOMContentLoaded', () => {
         printButtons.forEach(button => { button.disabled = !fits; });
         return fits;
     };
-    const ready = document.fonts ? document.fonts.ready : Promise.resolve();
-    ready.then(fitDocument);
+    // Pakai gambar sumber utuh dan tunggu font serta gambar selesai didekode sebelum cetak.
+    const ready = Promise.all([
+        document.fonts ? document.fonts.ready : Promise.resolve(),
+        ...[...(documentElement?.querySelectorAll('img') || [])].map(image => image.decode())
+    ]);
+    printButtons.forEach(button => { button.disabled = true; });
+    ready.then(() => {
+        printAssetsReady = true;
+        fitDocument();
+    }).catch(() => {
+        fits = false;
+        document.body.classList.add('print-overflow');
+        printButtons.forEach(button => { button.disabled = true; });
+        if (fitMessage) {
+            fitMessage.hidden = false;
+            fitMessage.textContent = 'Font atau gambar dokumen belum berhasil dimuat. Muat ulang halaman sebelum mencetak.';
+        }
+    });
     window.addEventListener('beforeprint', fitDocument);
     window.addEventListener('pageshow', event => { if (event.persisted) window.location.reload(); });
     printButtons.forEach(button => button.addEventListener('click', async () => {
-        await ready;
+        try { await ready; } catch { return; }
         if (fitDocument()) window.print();
     }));
 });

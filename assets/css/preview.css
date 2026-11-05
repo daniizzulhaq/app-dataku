@@ -15,8 +15,8 @@
     --qr-x-adjust:18mm;
     --admin-lower-space:10mm;
     --expiry-x-adjust:11.5mm;
-    --primary-y-adjust:3.5mm;
-    --secondary-y-adjust:3.5mm;
+    --primary-y-adjust:1.5mm;
+    --secondary-y-adjust:1.5mm;
     --owner-x:calc(var(--doc-w,230mm) * .17 + var(--layout-inset) + var(--field-x-adjust));
     --owner-y:calc(var(--doc-h,75mm) * .30 + var(--layout-inset) + 1mm);
     --specs-y:calc(var(--doc-h,75mm) * .52 + var(--layout-inset));
@@ -69,7 +69,7 @@
 .document-primary [data-field="model"]{top:.5mm}
 .document-approval{
     position:absolute;
-    top:calc(var(--doc-h,75mm) * .16 + var(--layout-inset));
+    top:calc(var(--doc-h,75mm) * .16 + var(--layout-inset) - 2mm);
     left:calc(var(--doc-w,230mm) * .635 + var(--layout-inset) + 3mm + var(--field-x-adjust));
     right:calc(26mm + var(--layout-inset) - var(--field-x-adjust) + var(--expiry-x-adjust));
     min-width:0;
@@ -95,7 +95,7 @@
     display:block;
     text-align:right;
 }
-.document-admin-bottom{position:absolute;right:var(--expiry-x-adjust);bottom:0;width:21mm;margin:0;text-align:center}
+.document-admin-bottom{position:absolute;right:var(--expiry-x-adjust);bottom:2mm;width:21mm;margin:0;text-align:center}
 .document-admin-bottom [data-field="kode_lokasi"]{top:-3mm;left:9mm}
 .document-value{
     position:relative;
@@ -157,7 +157,7 @@
 .internal-approval .internal-approval-content{width:fit-content;max-width:100%;margin:0;padding:0 0 .3mm;border-bottom:.2mm solid #111;font-size:1.05em;font-weight:700;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere;white-space:normal}
 .internal-approval-role{display:flex;flex-wrap:wrap;justify-content:center;gap:.4mm 1mm;width:100%;font-size:.85em;font-weight:700;line-height:var(--doc-line,1.2);text-align:center;overflow-wrap:anywhere}
 .internal-approval-role>span{min-width:0;max-width:100%;font:inherit;letter-spacing:normal}
-.document-admin-summary{position:absolute;left:var(--qr-x-adjust);top:-4.5mm;min-width:0}
+.document-admin-summary{position:absolute;left:var(--qr-x-adjust);top:-6.5mm;min-width:0}
 .internal-reference-code{width:20mm;min-width:0;margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:0;text-align:left;break-inside:avoid}
 .internal-reference-code figcaption{width:max-content;max-width:calc(var(--doc-w,230mm) * .18);margin-bottom:1.5mm;font-size:.95em;line-height:1.2;font-weight:700;overflow-wrap:anywhere;text-align:left}
 .internal-reference-code img{display:block;width:20mm;height:20mm;object-fit:contain;flex-shrink:0}

@@ -19,6 +19,6 @@ require __DIR__ . '/includes/header.php';
 <div class="preview-status"><span><i class="bi bi-aspect-ratio"></i> Landscape · <?= e($settings['paper_width_mm']) ?> × <?= e($settings['paper_height_mm']) ?> mm</span><span><i class="bi bi-check2-circle"></i> Data terbaru dari database</span></div>
 <?php if ($vehicle['catatan']): ?><div class="preview-notes no-print"><h2>Catatan admin · Tidak dicetak</h2><p><?= nl2br(e($vehicle['catatan'])) ?></p></div><?php endif; ?>
 </section>
-<div class="print-help"><strong><i class="bi bi-info-circle me-1"></i> Sebelum mencetak</strong><br>Pilih kertas <?= e($settings['paper_width_mm']) ?> × <?= e($settings['paper_height_mm']) ?> mm, landscape, skala 100% / Actual size, margin 0, dan matikan header/footer browser.</div>
+<div class="print-help"><strong><i class="bi bi-info-circle me-1"></i> Sebelum mencetak</strong><br>Pilih kertas <?= e($settings['paper_width_mm']) ?> × <?= e($settings['paper_height_mm']) ?> mm, landscape, skala 100% / Actual size, margin 0, dan matikan header/footer browser. Pada pengaturan printer, pilih kualitas High / Best dan matikan mode Draft / Economy.</div>
 <div class="print-failure">Konten melebihi area cetak. Periksa panjang data sebelum mencetak.</div>
 <?php require __DIR__ . '/includes/footer.php'; ?>

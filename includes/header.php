@@ -19,7 +19,7 @@ $printPages = ['print-settings.php', 'print-test.php'];
     <?php endif; ?>
     <?php if (!empty($hasDocument)): ?>
         <link rel="stylesheet" href="assets/css/preview.css?v=<?= filemtime(APP_ROOT . '/assets/css/preview.css') ?>">
-        <link rel="stylesheet" href="assets/css/print.css">
+        <link rel="stylesheet" href="assets/css/print.css?v=<?= filemtime(APP_ROOT . '/assets/css/print.css') ?>">
         <?= print_css($printPosition ?? 'middle') ?>
     <?php endif; ?>
     <script defer src="assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
