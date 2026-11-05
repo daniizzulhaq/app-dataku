@@ -1,0 +1,8 @@
+/config/database.local.php
+/storage/*
+!/storage/.htaccess
+!/storage/.gitkeep
+/tests/artifacts/*
+!/tests/artifacts/.gitkeep
+*.log
+node_modules/
