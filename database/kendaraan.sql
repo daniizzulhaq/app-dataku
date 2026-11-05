@@ -1,6 +1,6 @@
 -- MySQL 8 / MariaDB 10.4+, PHP 8.2+. Tidak ada akun/password bawaan.
-CREATE DATABASE IF NOT EXISTS db_kendaraan_print CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE db_kendaraan_print;
+-- Database hosting sudah dibuat melalui cPanel.
+USE datamast_data;
 
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
