@@ -17,7 +17,10 @@ $documentValue = static function (string $field) use ($vehicle): string {
         return $assembly !== '' && $assembly !== $year ? $year . ' / ' . $assembly : $year;
     }
     if (in_array($field, ['tanggal_penerbitan', 'berlaku_sampai'], true)) {
-        return !empty($vehicle[$field]) ? format_date($vehicle[$field]) : '';
+        if (empty($vehicle[$field])) return '';
+        return $field === 'berlaku_sampai'
+            ? (new DateTimeImmutable($vehicle[$field]))->format('d F Y')
+            : format_date($vehicle[$field]);
     }
     return (string) ($vehicle[$field] ?? '');
 };
