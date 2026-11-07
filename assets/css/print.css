@@ -7,7 +7,7 @@
     .paper-sheet{width:var(--paper-w)!important;height:var(--paper-h)!important;margin:0!important;padding:0!important;box-shadow:none!important;break-inside:avoid;break-after:avoid;overflow:hidden}
     .vehicle-document{margin:0!important;border:0!important;break-inside:avoid}
     .vehicle-document,.vehicle-document .document-value dd,.vehicle-document .internal-approval-content{color:#000!important}
-    .internal-approval-signature-space{mix-blend-mode:normal!important}
+    .internal-approval-signature-space{mix-blend-mode:multiply!important}
     .document-content,.document-header,.document-columns,.document-footer,.document-row,.draft-watermark{visibility:visible!important}
     .draft-watermark{display:block!important;color:#000!important;opacity:.16!important}
     .print-overflow .paper-sheet{display:none!important}
