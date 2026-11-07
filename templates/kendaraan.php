@@ -11,6 +11,9 @@ $middleFields = [
     'nomor_bpkb' => 'Nomor BPKB', 'nomor_urut' => 'Nomor urut pendaftaran',
 ];
 $documentValue = static function (string $field) use ($vehicle): string {
+    if ($field === 'alamat') {
+        return trim(preg_replace('/\s+/u', ' ', (string) ($vehicle[$field] ?? '')));
+    }
     if ($field === '_tahun') {
         $year = (string) $vehicle['tahun_pembuatan'];
         $assembly = (string) ($vehicle['tahun_perakitan'] ?? '');

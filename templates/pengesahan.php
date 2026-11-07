@@ -2,11 +2,18 @@
 // Komponen khusus pemeriksaan administratif internal.
 $approvalText = trim((string) ($vehicle['pengesahan_internal'] ?? ''));
 $approvalRole = trim((string) ($vehicle['jabatan_pemeriksa'] ?? ''));
-$approvalRegion = trim((string) ($vehicle['wilayah_pengesahan'] ?? ''));
+$approvalRegion = trim((string) ($vehicle['wilayah'] ?? ''));
+$approvalProvince = trim((string) ($vehicle['wilayah_pengesahan'] ?? ''));
+$approvalDate = !empty($vehicle['tanggal_wilayah'])
+    ? str_replace(' ', '-', strtolower(format_date($vehicle['tanggal_wilayah']))) : '';
 $approvalNrp = trim((string) ($vehicle['nrp_pemeriksa'] ?? ''));
 ?>
 <div class="internal-approval">
-    <div class="internal-approval-region"><?= e($approvalRegion) ?></div>
+    <div class="internal-approval-regions">
+        <div class="internal-approval-region"><?= e($approvalRegion) ?><?= $approvalRegion !== '' && $approvalDate !== '' ? ',' : '' ?></div>
+        <?php if ($approvalDate !== ''): ?><div class="internal-approval-date"><?= e($approvalDate) ?></div><?php endif; ?>
+        <div class="internal-approval-province"><?= e($approvalProvince) ?></div>
+    </div>
     <div class="internal-approval-signature-space">
         <img class="internal-approval-signature" src="assets/images/pengesahan-contoh.jpg" alt="Contoh tanda tangan dan stempel dari gambar referensi">
     </div>

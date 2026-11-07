@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS kendaraan (
     teks_atas_qr VARCHAR(60) NULL DEFAULT 'TELITI ULANG',
     pengesahan_internal VARCHAR(180) NULL,
     jabatan_pemeriksa VARCHAR(100) NULL,
+    wilayah VARCHAR(60) NULL,
+    tanggal_wilayah DATE NULL,
     wilayah_pengesahan VARCHAR(60) NULL,
     nrp_pemeriksa VARCHAR(30) NULL,
     catatan TEXT NULL,

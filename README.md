@@ -59,7 +59,7 @@ Setup lokal memeriksa alamat koneksi, tidak mempercayai header proxy. Gunakan ak
 
 ### Mengisi pengesahan dan melihat QR internal
 
-Di form tambah/edit, area kanan atas menyediakan **Wilayah / provinsi** (maksimal 60 karakter, misalnya `JAWA TIMUR`), **Nama / isi pengesahan** (180 karakter, mendukung beberapa baris), **Jabatan** (100 karakter), dan **NRP** (30 karakter; nol di depan dipertahankan). Semua kolom opsional. Preview dan cetakan menyusun wilayah di atas area gambar tanda tangan/stempel setinggi 8 mm mengikuti bentuk pada contoh, nama dengan garis hitam di bawahnya, lalu jabatan dan NRP pada satu baris yang membungkus bila perlu. Gambar referensi ditampilkan melalui CSS tanpa mengubah berkas aslinya, disertai penanda **CONTOH**. Klik **Simpan & Preview** untuk melihat hasilnya; data juga tersedia di detail. Jika nama kosong, dokumen menampilkan `BELUM DIISI`.
+Di form tambah/edit, area kanan atas menyediakan **Wilayah** dan **Provinsi** (masing-masing maksimal 60 karakter), **Tanggal wilayah**, **Nama / isi pengesahan** (180 karakter, mendukung beberapa baris), **Jabatan** (100 karakter), dan **NRP** (30 karakter; nol di depan dipertahankan). Semua kolom opsional. Wilayah dan provinsi sejajar atas–bawah; tanggal berada di kanan wilayah dengan font 75% (7,5 pt), misalnya `GRESIK, 08-januari-2026`. Tanggal kosong tidak menampilkan koma. Di bawahnya ada gambar tanda tangan/stempel, nama bergaris bawah, serta jabatan dan NRP. Gambar referensi ditampilkan melalui CSS tanpa mengubah berkas aslinya. Klik **Simpan & Preview** untuk melihat hasilnya; data juga tersedia di detail. Jika nama kosong, dokumen menampilkan `BELUM DIISI`.
 
 Bagian kanan dokumen menampilkan **TELITI ULANG — CONTOH** dan gambar QR tetap dari `assets/images/qr-contoh.jpg`. Isi QR mengikuti gambar pengguna, bukan data kendaraan yang sedang dibuka. Keterangan tanggal dan nomor referensi di samping QR tidak dicetak. Generator QR internal lama tetap tersedia di `includes/qr.php`, tetapi tidak dipakai template ini. Pustaka BaconQrCode 2.0.8 dan DASPRiD Enum 1.0.3 disertakan dengan lisensi BSD-2-Clause di `includes/vendor/`.
 
@@ -69,7 +69,7 @@ Untuk memperbarui instalasi lama tanpa menghapus data, jalankan dari folder proy
 C:\xampp\php\php.exe database\migrate.php
 ```
 
-Migrasi menambahkan kolom opsional `pengesahan_internal`, `jabatan_pemeriksa`, `wilayah_pengesahan`, `nrp_pemeriksa`, dan `teks_atas_qr` dan aman dijalankan ulang. Instalasi baru sudah menyertakan semuanya di `database/kendaraan.sql`. File SQL utama tidak mengubah struktur tabel yang sudah ada; gunakan migrasi untuk pembaruan instalasi lama.
+Migrasi menambahkan kolom opsional `pengesahan_internal`, `jabatan_pemeriksa`, `wilayah`, `tanggal_wilayah`, `wilayah_pengesahan`, `nrp_pemeriksa`, dan `teks_atas_qr` dan aman dijalankan ulang. Data provinsi lama tetap memakai `wilayah_pengesahan`; kolom wilayah dan tanggal baru kosong sampai diisi. QR diturunkan 5 mm untuk memberi ruang baris tambahan. Instalasi baru sudah menyertakan semuanya di `database/kendaraan.sql`. File SQL utama tidak mengubah struktur tabel yang sudah ada; gunakan migrasi untuk pembaruan instalasi lama.
 
 Kolom **Tulisan di atas QR** pada bagian Administrasi di formulir tambah/edit disimpan per kendaraan dan tampil pada preview serta hasil cetak. Nilai awalnya `TELITI ULANG`; kosongkan untuk menyembunyikan tulisan. Isian otomatis kapital dengan batas 60 karakter.
 
@@ -87,7 +87,7 @@ Di preview, halaman cetak, atau **Posisi cetak**, pilih kolom lalu klik **Terapk
 
 Percobaan perubahan ke Letter dibatalkan. Ukuran halaman aplikasi kembali **297 × 230 mm**, tanpa mengubah font 10 pt atau koreksi isian sebelumnya.
 
-Preview dan print memakai template yang sama. Penanda kolom hanya tampil di layar. Tanggal penerbitan di atas wilayah tidak ditampilkan. Ukuran huruf dan jarak baris tetap pada setiap pemeriksaan dan cetakan; data panjang tidak mengecilkan tulisan secara otomatis. Bila isian melewati ruang tersedia, cetak diblokir dengan pesan untuk meringkas isian agar data tidak terpotong.
+Preview dan print memakai template yang sama. Penanda kolom hanya tampil di layar. Tanggal penerbitan di atas wilayah tidak ditampilkan. Alamat disesuaikan dari 10 pt hingga paling kecil 8 pt bila perlu agar tetap satu baris sebelum QR. Ukuran huruf kolom lainnya dan jarak baris tetap. Bila isian masih melewati ruang tersedia, cetak diblokir dengan pesan untuk meringkas isian agar data tidak terpotong.
 
 ## Struktur
 

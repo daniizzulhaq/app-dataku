@@ -39,11 +39,11 @@ function csrf(html) {
 const snapshot = () => JSON.parse(phpCall('tests/db-helper.php', 'snapshot'));
 const fixture = {
     nomor_polisi: 'B 1234 UJI', nama_pemilik: 'Pemilik Fiktif <UJI>', nik: '0012345678901234',
-    alamat: 'Jalan Contoh No. 12, Kelurahan Fiktif, Kecamatan Pengujian, Jakarta',
+    alamat: 'Jalan Contoh No. 12, Kelurahan Fiktif, Jakarta Selatan',
     merek: 'Toyota', tipe: 'Avanza 1.5 G', jenis: 'Mobil penumpang', model: 'Minibus', tahun_pembuatan: '2024', tahun_perakitan: '2024',
     isi_silinder: '1496', nomor_rangka: '000VIN-UJI-123456789', nomor_mesin: '000MESIN-UJI-98765', warna: 'Putih', bahan_bakar: 'Bensin', warna_tnkb: 'Putih',
     tahun_registrasi: '2024', nomor_bpkb: '000BPKB-UJI', nomor_urut: '000001', kode_lokasi: 'JKT-01', tanggal_penerbitan: '2026-10-01', berlaku_sampai: '2031-11-04',
-    nomor_referensi: 'INT/UJI/0001', teks_atas_qr: 'Teliti ulang <UJI>', wilayah_pengesahan: 'JAWA TIMUR', pengesahan_internal: 'Pemeriksa Fiktif', jabatan_pemeriksa: 'Admin Pengujian <UJI>', nrp_pemeriksa: '00012345', catatan: 'Data fiktif untuk pengujian. <script>alert(1)</script>'
+    nomor_referensi: 'INT/UJI/0001', teks_atas_qr: 'Teliti ulang <UJI>', wilayah: 'Gresik', tanggal_wilayah: '2026-01-08', wilayah_pengesahan: 'JAWA TIMUR', pengesahan_internal: 'Pemeriksa Fiktif', jabatan_pemeriksa: 'Admin <UJI>', nrp_pemeriksa: '00012345', catatan: 'Data fiktif untuk pengujian. <script>alert(1)</script>'
 };
 
 class CDP {
@@ -108,6 +108,9 @@ try {
     response = await request('login.php'); response = await request('login.php', { csrf: csrf(response.body), username: 'qa_admin', password });
     assert.equal(response.status, 303); response = await request('index.php'); assert.equal(response.status, 200); report('Login and dashboard');
     const add = await request('tambah.php'); const authCsrf = csrf(add.body);
+    assert.ok(add.body.indexOf('id="wilayah"') < add.body.indexOf('id="wilayah_pengesahan"'));
+    assert.equal((await request('simpan.php', { ...fixture, csrf: authCsrf, wilayah: 'x'.repeat(61) })).status, 422);
+    assert.equal((await request('simpan.php', { ...fixture, csrf: authCsrf, tanggal_wilayah: '2026-02-30' })).status, 422);
     assert.match(add.body, /id="teks_atas_qr"[^>]*value="TELITI ULANG"/);
     assert.equal((await request('simpan.php', { ...fixture, csrf: authCsrf, teks_atas_qr: 'x'.repeat(61) })).status, 422);
     assert.equal((await request('simpan.php', { ...fixture, csrf: 'bad' })).status, 419);
@@ -123,6 +126,10 @@ try {
     }
     assert.equal(snapshot().vehicles[0].jabatan_pemeriksa, fixture.jabatan_pemeriksa.toUpperCase());
     assert.equal(snapshot().vehicles[0].wilayah_pengesahan, fixture.wilayah_pengesahan);
+    response = await request('edit.php?id=' + id);
+    assert.match(response.body, /id="wilayah"[^>]*value="GRESIK"/);
+    assert.match(response.body, /id="tanggal_wilayah"[^>]*value="2026-01-08"/);
+    assert.match(response.body, /id="wilayah_pengesahan"[^>]*value="JAWA TIMUR"/);
     assert.equal(snapshot().vehicles[0].nrp_pemeriksa, fixture.nrp_pemeriksa);
     report('Vehicle persisted; leading zeros preserved');
     assert.equal((await request('simpan.php', { ...fixture, csrf: authCsrf })).status, 422); report('Duplicate plate rejected');
@@ -174,12 +181,27 @@ try {
     assert.equal(await cdp.evaluate('getComputedStyle(document.querySelector(".row.g-4") || document.querySelector(".d-flex")).display'), 'flex');
     report('Desktop dashboard rendered with Bootstrap');
     await cdp.navigate('preview.php?id=' + id);
+    assert.equal(await cdp.evaluate(`(() => {
+        const region = document.querySelector('.internal-approval-region');
+        const province = document.querySelector('.internal-approval-province');
+        const date = document.querySelector('.internal-approval-date');
+        const signature = document.querySelector('.internal-approval-signature-space');
+        return region.textContent === 'GRESIK,' && province.textContent === 'JAWA TIMUR'
+            && date.textContent === '08-januari-2026'
+            && date.offsetLeft >= region.offsetLeft + region.offsetWidth
+            && Math.abs(region.offsetLeft - province.offsetLeft) < 1
+            && Math.abs(region.offsetWidth - province.offsetWidth) < 1
+            && parseFloat(getComputedStyle(date).fontSize) < parseFloat(getComputedStyle(region).fontSize)
+            && province.offsetTop >= region.offsetTop + region.offsetHeight
+            && signature.offsetTop >= province.offsetTop + province.offsetHeight;
+    })()`), true);
+    report('Region and province align vertically with a smaller date on the right; all fields persist and reopen for editing');
     const preview = await cdp.evaluate('document.querySelector(".vehicle-document").outerHTML');
     assert.ok(preview.includes('<figcaption>PERIKSA KEMBALI &lt;UJI&gt;</figcaption>'));
     assert.ok(preview.includes('<span>D5H7GUSPR</span>'));
-    assert.ok(preview.includes('ADMIN PENGUJIAN &lt;UJI&gt;'));
+    assert.ok(preview.includes('ADMIN &lt;UJI&gt;'));
     assert.equal(await cdp.evaluate(`(() => {
-        return [...document.querySelectorAll('.document-value:not(.document-expiry) dd, .internal-approval-region, .internal-approval-content, .internal-approval-job, .internal-approval-nrp')]
+        return [...document.querySelectorAll('.document-value:not(.document-expiry) dd, .internal-approval-region, .internal-approval-province, .internal-approval-content, .internal-approval-job, .internal-approval-nrp')]
             .every(element => element.textContent === element.textContent.toUpperCase());
     })()`), true);
     assert.ok(preview.includes('NRP 00012345'));
@@ -229,10 +251,10 @@ try {
     assert.ok(Math.abs(layout.plate.y-24)<.2 && Math.abs(layout.merek.y-44.5)<.3 && Math.abs(layout.model.y-59.5)<.3 && Math.abs(layout.year.y-64)<.3, 'Both specification blocks must leave fixed space for a two-line address at 10pt');
     assert.ok(layout.ownerBottom <= layout.merek.y-.5, 'Owner and address text must leave a visible gap before the first specification row');
     assert.ok(Math.abs(layout.primaryStep-5)<.3 && Math.abs(layout.ownerStep-5)<.3, 'Owner and specification rows must have the larger 5mm spacing');
-    assert.ok(Math.abs(layout.qr.x-183.5)<.2 && Math.abs(layout.qr.y-32.5)<.2 && Math.abs(layout.qrWidth-20)<.1);
+    assert.ok(Math.abs(layout.qr.x-183.5)<.3 && Math.abs(layout.qr.y-37.5)<.3 && Math.abs(layout.qrWidth-20)<.1);
     assert.ok(Math.abs(layout.qrCaptionFont-9.5)<.08, 'Text beneath QR must scale with the 10pt font');
     assert.ok(Math.abs(layout.approval.x-165.05)<.2 && Math.abs(layout.approval.y-10)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9)<.08);
-    assert.ok(Math.abs(layout.bottom.x-212)<.3 && Math.abs(layout.expiry.x-202.5)<.3 && layout.expiry.y>74.8 && layout.expiry.y<75.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-10.5)<.08, 'Date and code must move 3mm right without changing their vertical positions');
+    assert.ok(Math.abs(layout.bottom.x-212)<.3 && Math.abs(layout.expiry.x-202.5)<.3 && layout.expiry.y>74.5 && layout.expiry.y<75.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-10.5)<.08, 'Date and code must move 3mm right without changing their vertical positions');
     assert.ok(Math.abs(layout.location.x-223.5)<.3 && Math.abs(layout.location.y-layout.bottom.y+3)<.3, 'Location code must move another 3mm right with the date');
     assert.equal(await cdp.evaluate('document.querySelector(".document-expiry dd").textContent'),'04 November 2031');
     assert.equal(await cdp.evaluate('document.querySelector("[data-field=tanggal_penerbitan]") === null'),true);
@@ -307,6 +329,25 @@ try {
     assert.equal(await cdp.evaluate('document.getElementById("position").value'),'middle');
     assert.equal(await cdp.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--doc-rotation").trim()'),'90deg');
     report('Fixed layout: three columns, unchanged landscape PDF, one STNK, remembered position and legacy URL protection');
+    response = await request('update.php', { ...fixture, csrf: authCsrf, id, version: snapshot().vehicles[0].updated_at,
+        alamat: 'Jalan Contoh No. 12, Kelurahan Fiktif, Kecamatan Pengujian, Jakarta' });
+    assert.equal(response.status, 303);
+    await cdp.navigate('print.php?id=' + id);
+    assert.equal(await cdp.evaluate(`(() => {
+        const address = document.querySelector('.document-address dd');
+        const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-scale'));
+        const font = parseFloat(getComputedStyle(address).fontSize)*72/96*scale;
+        return !document.querySelector('[data-print]').disabled && address.scrollWidth <= address.clientWidth + 1
+            && font >= 7.99 && font < 10 && getComputedStyle(address).whiteSpace === 'nowrap';
+    })()`), true);
+    assert.equal(await cdp.evaluate(`(() => {
+        window.print = () => { window.testPrinted = true; };
+        document.querySelector('[data-print]').click();
+        return new Promise(resolve => setTimeout(() => resolve(window.testPrinted === true), 100));
+    })()`), true);
+    await cdp.evaluate('window.testPrinted = false; window.dispatchEvent(new Event("beforeprint"))');
+    assert.equal(await cdp.evaluate('document.querySelector("[data-print]").disabled'), false);
+    report('Longer single-line address fits at a readable size; Print click opens printing and repeated checks stay enabled');
     await cdp.call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await cdp.navigate('index.php'); assert.equal(await cdp.evaluate('document.documentElement.scrollWidth <= innerWidth'), true); await cdp.screenshot('dashboard-mobile.png');
     await cdp.evaluate('document.getElementById("menu-toggle").click()'); assert.equal(await cdp.evaluate('document.getElementById("sidebar").classList.contains("is-open")'), true);
@@ -339,10 +380,13 @@ try {
         document.body.classList.add('print-overflow');
         return top;
     })()`) - layout.primary.y) < .1, 'Long address must not shift specification rows');
-    response = await request('update.php', { ...fixture, csrf: authCsrf, id, version: snapshot().vehicles[0].updated_at, teks_atas_qr: '' });
+    response = await request('update.php', { ...fixture, csrf: authCsrf, id, version: snapshot().vehicles[0].updated_at, teks_atas_qr: '', tanggal_wilayah: '' });
     assert.equal(response.status, 303);
     assert.equal(snapshot().vehicles.find(vehicle => vehicle.id === id).teks_atas_qr, null);
+    assert.equal(snapshot().vehicles.find(vehicle => vehicle.id === id).tanggal_wilayah, null);
     response = await request('preview.php?id=' + id); assert.ok(!response.body.includes('<figcaption>'));
+    assert.ok(!response.body.includes('class="internal-approval-date"'));
+    assert.ok(response.body.includes('class="internal-approval-region">GRESIK</div>'));
     response = await request('print.php?id=' + id); assert.ok(!response.body.includes('<figcaption>')); assert.ok(response.body.includes('D5H7GUSPR'));
     response = await request('edit.php?id=' + id); assert.match(response.body, /id="teks_atas_qr"[^>]*value=""/);
     report('QR caption: editable per vehicle, escaped, uppercase, optional and retained on edit');

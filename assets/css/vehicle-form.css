@@ -84,4 +84,5 @@
 .template-approval-input .template-colon{display:none}
 .template-approval-input textarea.form-control{min-height:52px;font-family:Inter,system-ui,sans-serif;font-size:11px;line-height:1.7}
 .template-approval-hint{font-size:9px;line-height:1.7;color:#98a5b9;margin:9px 0 0}
+.template-region-inputs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10px}
 @media(max-width:767px){.template-approval-input textarea.form-control{font-size:16px}}

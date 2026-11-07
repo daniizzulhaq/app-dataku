@@ -92,12 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
             return top;
         };
         const firstSpecification = content.querySelector('.document-primary .document-value dd');
+        const address = content.querySelector('.document-address dd');
+        // Alamat tetap satu baris; sesuaikan hanya alamat sampai paling kecil 8 pt cetak.
+        if (address) {
+            address.style.fontSize = `${base}pt`;
+            if (address.scrollWidth > address.clientWidth + 1) {
+                const addressSize = Math.max(base * .8, base * (address.clientWidth - 1) / address.scrollWidth);
+                address.style.fontSize = `${addressSize}pt`;
+            }
+        }
+        const addressTooWide = address && address.scrollWidth > address.clientWidth + 1;
         const ownerOverlapsSpecifications = firstSpecification
             ? [...content.querySelectorAll('.document-owner .document-value dd')].some(value =>
                 layoutTop(value) + value.offsetHeight > layoutTop(firstSpecification) - 2)
             : false;
         // Tanggal dan kode boleh melewati lebar bidang dasar; outsideSlot tetap memeriksa batas kertas.
-        const overflows = () => ownerOverlapsSpecifications || outsideSlot() || content.scrollHeight > content.clientHeight + 1
+        const overflows = () => addressTooWide || ownerOverlapsSpecifications || outsideSlot() || content.scrollHeight > content.clientHeight + 1
             || columns.scrollHeight > columns.clientHeight + 1
             || (approval && reference && layoutTop(approval) + approval.offsetHeight > layoutTop(reference) - 4)
             || [...content.querySelectorAll('.document-owner, .document-column')].some(column => column.scrollHeight > column.clientHeight + 1);
@@ -105,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('print-overflow', !fits);
         if (fitMessage) {
             fitMessage.hidden = fits;
-            fitMessage.textContent = fits ? '' : ownerOverlapsSpecifications
+            fitMessage.textContent = fits ? '' : addressTooWide
+                ? 'Alamat terlalu panjang untuk satu baris. Ringkas alamat sebelum mencetak agar tidak menutupi QR.'
+                : ownerOverlapsSpecifications
                 ? 'Nama atau alamat terlalu panjang dan bertumpuk dengan data kendaraan. Ringkas isian tersebut sebelum mencetak; ukuran tulisan dan posisi cetak tetap.'
                 : 'Konten melebihi area kertas atau kolom. Ukuran tulisan dan jarak baris tetap. Ringkas isian yang terlalu panjang sebelum mencetak.';
         }

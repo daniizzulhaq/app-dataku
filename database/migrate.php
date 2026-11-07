@@ -15,6 +15,8 @@ try {
         'teks_atas_qr' => "VARCHAR(60) NULL DEFAULT 'TELITI ULANG' AFTER nomor_referensi",
         'pengesahan_internal' => 'VARCHAR(180) NULL AFTER nomor_referensi',
         'jabatan_pemeriksa' => 'VARCHAR(100) NULL AFTER pengesahan_internal',
+        'wilayah' => 'VARCHAR(60) NULL AFTER jabatan_pemeriksa',
+        'tanggal_wilayah' => 'DATE NULL AFTER wilayah',
         'wilayah_pengesahan' => 'VARCHAR(60) NULL AFTER jabatan_pemeriksa',
         'nrp_pemeriksa' => 'VARCHAR(30) NULL AFTER wilayah_pengesahan',
     ];

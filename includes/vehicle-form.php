@@ -58,11 +58,15 @@ $backLink = $isEdit ? 'detail.php?id=' . (int) $vehicle['id'] : 'index.php';
                     </div>
                     <fieldset class="template-approval-input" aria-label="Pengesahan internal">
                         <legend>AREA PENGESAHAN INTERNAL</legend>
+                        <div class="template-region-inputs">
+                            <?php $renderInput('wilayah'); ?>
+                            <?php $renderInput('tanggal_wilayah'); ?>
+                        </div>
                         <?php $renderInput('wilayah_pengesahan'); ?>
                         <?php $renderInput('pengesahan_internal'); ?>
                         <?php $renderInput('jabatan_pemeriksa'); ?>
                         <?php $renderInput('nrp_pemeriksa'); ?>
-                        <p class="template-approval-hint">Wilayah tampil di atas ruang kosong tanda tangan dan stempel. Nama bergaris bawah, diikuti jabatan dan NRP pada baris berikutnya. Semua kolom opsional.</p>
+                        <p class="template-approval-hint">Wilayah dan provinsi sejajar atas–bawah. Tanggal tampil di kanan wilayah dengan huruf lebih kecil, misalnya GRESIK, 08-januari-2026. Semua kolom opsional.</p>
                     </fieldset>
                     <fieldset class="template-input-section template-vehicle-inputs">
                         <legend>Spesifikasi kendaraan</legend>
