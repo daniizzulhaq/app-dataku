@@ -194,15 +194,23 @@ try {
         const nameRect = document.querySelector('.internal-approval-content').getBoundingClientRect();
         position.style.transform = originalTransform;
         const centerX = rect => rect.left + rect.width / 2;
+        const roleStyle = getComputedStyle(document.querySelector('.internal-approval-job'));
+        const matchingFonts = [...document.querySelectorAll('.internal-approval-region, .internal-approval-province, .internal-approval-content, .internal-approval-nrp, .internal-approval-date')]
+            .every(element => {
+                const style = getComputedStyle(element);
+                return style.fontSize === roleStyle.fontSize && style.fontFamily === roleStyle.fontFamily
+                    && style.fontWeight === roleStyle.fontWeight;
+            });
         return region.textContent === 'GRESIK,' && province.textContent === 'JAWA TIMUR'
+            && matchingFonts
             && date.textContent === '08-January-2026'
             && dateRect.left >= regionRect.right
             && Math.abs(centerX(regionRect) - centerX(nameRect)) < 1
             && Math.abs(centerX(provinceRect) - centerX(nameRect)) < 1
-            && parseFloat(getComputedStyle(date).fontSize) < parseFloat(getComputedStyle(region).fontSize)
+            && getComputedStyle(date).fontSize === getComputedStyle(region).fontSize
             && provinceRect.top >= regionRect.bottom;
     })()`), true);
-    report('Region and province align vertically with a smaller date on the right; all fields persist and reopen for editing');
+    report('Region and province align vertically with a matching date font on the right; all fields persist and reopen for editing');
     const preview = await cdp.evaluate('document.querySelector(".vehicle-document").outerHTML');
     assert.ok(preview.includes('<figcaption>PERIKSA KEMBALI &lt;UJI&gt;</figcaption>'));
     assert.ok(preview.includes('<span>D5H7GUSPR</span>'));
@@ -260,7 +268,7 @@ try {
     assert.ok(Math.abs(layout.primaryStep-5)<.3 && Math.abs(layout.ownerStep-5)<.3, 'Owner and specification rows must have the larger 5mm spacing');
     assert.ok(Math.abs(layout.qr.x-183.5)<.3 && Math.abs(layout.qr.y-37.5)<.3 && Math.abs(layout.qrWidth-20)<.1);
     assert.ok(Math.abs(layout.qrCaptionFont-9.5)<.08, 'Text beneath QR must scale with the 10pt font');
-    assert.ok(Math.abs(layout.approval.x-167.05)<.2 && Math.abs(layout.approval.y-10)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9)<.08, 'Approval block must move 2mm right while retaining its height, signature size and font');
+    assert.ok(Math.abs(layout.approval.x-168.05)<.2 && Math.abs(layout.approval.y-10)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-8)<.08, 'Approval block must move another 1mm right and use the 8pt role font while retaining its signature size');
     assert.ok(Math.abs(layout.bottom.x-212)<.3 && Math.abs(layout.expiry.x-202.5)<.3 && layout.expiry.y>74.5 && layout.expiry.y<75.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-10.5)<.08, 'Date and code must move 3mm right without changing their vertical positions');
     assert.ok(Math.abs(layout.location.x-223.5)<.3 && Math.abs(layout.location.y-layout.bottom.y+3)<.3, 'Location code must move another 3mm right with the date');
     assert.equal(await cdp.evaluate('document.querySelector(".document-expiry dd").textContent'),'04 November 2031');
