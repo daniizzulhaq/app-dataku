@@ -19,7 +19,7 @@ $describedBy = trim(($invalid ? 'error-' . $name : '') . ' ' . $helpId);
             </select>
         <?php else: ?>
             <input class="form-control <?= $invalid ? 'is-invalid' : '' ?>" type="<?= $type === 'year' ? 'number' : e($type) ?>" id="<?= e($name) ?>" name="<?= e($name) ?>" value="<?= e($value) ?>" <?= $required ? 'required' : '' ?> maxlength="<?= $max ?>" placeholder="<?= e($placeholder) ?>" <?= $type === 'year' ? 'min="1900" max="' . ((int) date('Y') + 1) . '" step="1"' : '' ?> <?= $type === 'number' ? 'min="0" max="100000" step="1"' : '' ?> <?= $name === 'nik' ? 'inputmode="numeric" pattern="[0-9]{16}"' : '' ?> <?= $type === 'date' ? 'min="1900-01-01" max="2199-12-31"' : '' ?> <?= $invalid ? 'aria-invalid="true"' : '' ?> <?= $describedBy !== '' ? 'aria-describedby="' . e($describedBy) . '"' : '' ?>>
-            <?php if ($name === 'nik'): ?><div class="form-text template-input-hint" id="hint-nik">16 digit, termasuk angka nol di depan.</div><?php endif; ?>
+            <?php if ($name === 'nik'): ?><div class="form-text template-input-hint" id="hint-nik">Opsional. Jika diisi, gunakan 16 digit angka, termasuk angka nol di depan.</div><?php endif; ?>
         <?php endif; ?>
         <?php if ($invalid): ?><div class="invalid-feedback d-block" id="error-<?= e($name) ?>"><?= e($errors[$name]) ?></div><?php endif; ?>
     </div>

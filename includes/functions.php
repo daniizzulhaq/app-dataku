@@ -64,7 +64,7 @@ function vehicle_fields(): array
         'pemilik' => ['title' => 'Data pemilik', 'description' => 'Identitas kendaraan dan pemilik yang terdaftar.', 'icon' => 'person', 'fields' => [
             'nomor_polisi' => ['Nomor Polisi / NRKB', 'text', 20, true, 'B 1234 XYZ'],
             'nama_pemilik' => ['Nama Pemilik', 'text', 100, true, 'Nama lengkap pemilik'],
-            'nik' => ['NIK', 'text', 16, true, '16 digit NIK'],
+            'nik' => ['NIK', 'text', 16, false, '16 digit NIK (opsional)'],
             'alamat' => ['Alamat Lengkap', 'textarea', 300, true, 'Jalan, kelurahan, kecamatan, kota, dan provinsi'],
         ]],
         'kendaraan' => ['title' => 'Data kendaraan', 'description' => 'Spesifikasi dan identitas fisik kendaraan.', 'icon' => 'car-front', 'fields' => [

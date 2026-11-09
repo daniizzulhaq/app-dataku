@@ -50,7 +50,7 @@ Setup lokal memeriksa alamat koneksi, tidak mempercayai header proxy. Gunakan ak
 ## Mencoba alur utama
 
 1. Login, tekan **Tambah data**.
-2. Isi langsung formulir horizontal dengan pola **Label : [kolom isian]**. Susunan pemilik di atas, spesifikasi di kiri, identitas tambahan di tengah, dan administrasi di kanan memudahkan pengisian mengikuti template. Pada HP, kolom disusun ke bawah. Isi kolom bertanda bintang. Nomor polisi harus unik; NIK harus 16 digit. VIN, nomor mesin, NIK, nomor polisi, BPKB, dan nomor urut disimpan sebagai string agar nol di depan tetap utuh. CC `0` diperbolehkan untuk kendaraan listrik. Label dan tanda titik dua pada formulir tidak ikut dicetak.
+2. Isi langsung formulir horizontal dengan pola **Label : [kolom isian]**. Susunan pemilik di atas, spesifikasi di kiri, identitas tambahan di tengah, dan administrasi di kanan memudahkan pengisian mengikuti template. Pada HP, kolom disusun ke bawah. Isi kolom bertanda bintang. Nomor polisi harus unik; NIK opsional; jika diisi harus 16 digit angka. VIN, nomor mesin, NIK, nomor polisi, BPKB, dan nomor urut disimpan sebagai string agar nol di depan tetap utuh. CC `0` diperbolehkan untuk kendaraan listrik. Label dan tanda titik dua pada formulir tidak ikut dicetak.
 3. Klik **Simpan & Preview** untuk menyimpan lalu melihat dokumen. Tombol **Simpan** membuka detail kendaraan.
 4. Gunakan **Edit data** untuk koreksi. Backend mencegah penyimpanan jika halaman lain sudah memperbarui data yang sama.
 5. Pilih profil cetak dan klik **Terapkan**. Opsi garis potong muncul pada A4.
@@ -69,7 +69,7 @@ Untuk memperbarui instalasi lama tanpa menghapus data, jalankan dari folder proy
 C:\xampp\php\php.exe database\migrate.php
 ```
 
-Migrasi menambahkan kolom opsional `pengesahan_internal`, `jabatan_pemeriksa`, `wilayah`, `tanggal_wilayah`, `wilayah_pengesahan`, `nrp_pemeriksa`, dan `teks_atas_qr` dan aman dijalankan ulang. Data provinsi lama tetap memakai `wilayah_pengesahan`; kolom wilayah dan tanggal baru kosong sampai diisi. QR diturunkan 5 mm untuk memberi ruang baris tambahan. Instalasi baru sudah menyertakan semuanya di `database/kendaraan.sql`. File SQL utama tidak mengubah struktur tabel yang sudah ada; gunakan migrasi untuk pembaruan instalasi lama.
+Migrasi menambahkan kolom opsional `pengesahan_internal`, `jabatan_pemeriksa`, `wilayah`, `tanggal_wilayah`, `wilayah_pengesahan`, `nrp_pemeriksa`, dan `teks_atas_qr` serta mengizinkan NIK kosong, dan aman dijalankan ulang. Data provinsi lama tetap memakai `wilayah_pengesahan`; kolom wilayah dan tanggal baru kosong sampai diisi. QR diturunkan 5 mm untuk memberi ruang baris tambahan. Instalasi baru sudah menyertakan semuanya di `database/kendaraan.sql`. File SQL utama tidak mengubah struktur tabel yang sudah ada; gunakan migrasi untuk pembaruan instalasi lama.
 
 Kolom **Tulisan di atas QR** pada bagian Administrasi di formulir tambah/edit disimpan per kendaraan dan tampil pada preview serta hasil cetak. Nilai awalnya `TELITI ULANG`; kosongkan untuk menyembunyikan tulisan. Isian otomatis kapital dengan batas 60 karakter.
 

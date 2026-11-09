@@ -27,6 +27,11 @@ try {
             fwrite(STDOUT, "Kolom $column berhasil ditambahkan. Data lama dipertahankan.\n");
         }
     }
+    $nikNullable = $connection->query("SELECT IS_NULLABLE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'kendaraan' AND COLUMN_NAME = 'nik'")->fetchColumn();
+    if ($nikNullable === 'NO') {
+        $connection->exec('ALTER TABLE kendaraan MODIFY COLUMN nik VARCHAR(16) NULL');
+        fwrite(STDOUT, "NIK sekarang opsional. Data lama dipertahankan.\n");
+    }
     fwrite(STDOUT, "Database sudah menggunakan skema terbaru.\n");
 } finally {
     $connection->query("SELECT RELEASE_LOCK('kendara_schema_migration')");
