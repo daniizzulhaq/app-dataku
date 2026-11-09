@@ -185,15 +185,22 @@ try {
         const region = document.querySelector('.internal-approval-region');
         const province = document.querySelector('.internal-approval-province');
         const date = document.querySelector('.internal-approval-date');
-        const signature = document.querySelector('.internal-approval-signature-space');
+        const position = document.querySelector('.document-position');
+        const originalTransform = position.style.transform;
+        position.style.transform = 'none';
+        const regionRect = region.getBoundingClientRect();
+        const provinceRect = province.getBoundingClientRect();
+        const dateRect = date.getBoundingClientRect();
+        const nameRect = document.querySelector('.internal-approval-content').getBoundingClientRect();
+        position.style.transform = originalTransform;
+        const centerX = rect => rect.left + rect.width / 2;
         return region.textContent === 'GRESIK,' && province.textContent === 'JAWA TIMUR'
-            && date.textContent === '08-januari-2026'
-            && date.offsetLeft >= region.offsetLeft + region.offsetWidth
-            && Math.abs(region.offsetLeft - province.offsetLeft) < 1
-            && Math.abs(region.offsetWidth - province.offsetWidth) < 1
+            && date.textContent === '08-January-2026'
+            && dateRect.left >= regionRect.right
+            && Math.abs(centerX(regionRect) - centerX(nameRect)) < 1
+            && Math.abs(centerX(provinceRect) - centerX(nameRect)) < 1
             && parseFloat(getComputedStyle(date).fontSize) < parseFloat(getComputedStyle(region).fontSize)
-            && province.offsetTop >= region.offsetTop + region.offsetHeight
-            && signature.offsetTop >= province.offsetTop + province.offsetHeight;
+            && provinceRect.top >= regionRect.bottom;
     })()`), true);
     report('Region and province align vertically with a smaller date on the right; all fields persist and reopen for editing');
     const preview = await cdp.evaluate('document.querySelector(".vehicle-document").outerHTML');
@@ -253,7 +260,7 @@ try {
     assert.ok(Math.abs(layout.primaryStep-5)<.3 && Math.abs(layout.ownerStep-5)<.3, 'Owner and specification rows must have the larger 5mm spacing');
     assert.ok(Math.abs(layout.qr.x-183.5)<.3 && Math.abs(layout.qr.y-37.5)<.3 && Math.abs(layout.qrWidth-20)<.1);
     assert.ok(Math.abs(layout.qrCaptionFont-9.5)<.08, 'Text beneath QR must scale with the 10pt font');
-    assert.ok(Math.abs(layout.approval.x-165.05)<.2 && Math.abs(layout.approval.y-10)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9)<.08);
+    assert.ok(Math.abs(layout.approval.x-167.05)<.2 && Math.abs(layout.approval.y-10)<.2 && Math.abs(layout.signatureWidth-48)<.1 && Math.abs(layout.nameFont-9)<.08, 'Approval block must move 2mm right while retaining its height, signature size and font');
     assert.ok(Math.abs(layout.bottom.x-212)<.3 && Math.abs(layout.expiry.x-202.5)<.3 && layout.expiry.y>74.5 && layout.expiry.y<75.8 && layout.expiryAlign==='right' && Math.abs(layout.expiryFont-10.5)<.08, 'Date and code must move 3mm right without changing their vertical positions');
     assert.ok(Math.abs(layout.location.x-223.5)<.3 && Math.abs(layout.location.y-layout.bottom.y+3)<.3, 'Location code must move another 3mm right with the date');
     assert.equal(await cdp.evaluate('document.querySelector(".document-expiry dd").textContent'),'04 November 2031');
@@ -330,15 +337,32 @@ try {
     assert.equal(await cdp.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--doc-rotation").trim()'),'90deg');
     report('Fixed layout: three columns, unchanged landscape PDF, one STNK, remembered position and legacy URL protection');
     response = await request('update.php', { ...fixture, csrf: authCsrf, id, version: snapshot().vehicles[0].updated_at,
-        alamat: 'Jalan Contoh No. 12, Kelurahan Fiktif, Kecamatan Pengujian, Jakarta' });
+        alamat: 'Klampis Utara RT 3 RW 2 DS Klampis Rejo Kec Kraton Pasuruan', jabatan_pemeriksa: 'Kombes Pol' });
     assert.equal(response.status, 303);
     await cdp.navigate('print.php?id=' + id);
     assert.equal(await cdp.evaluate(`(() => {
         const address = document.querySelector('.document-address dd');
         const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--doc-scale'));
         const font = parseFloat(getComputedStyle(address).fontSize)*72/96*scale;
+        const position = document.querySelector('.document-position');
+        const originalTransform = position.style.transform;
+        position.style.transform = 'none';
+        const boundary = document.querySelector('.internal-approval-job').getBoundingClientRect().left;
+        const addressBounds = address.getBoundingClientRect();
+        const wordTop = word => {
+            const range = document.createRange();
+            const start = address.firstChild.textContent.indexOf(word);
+            range.setStart(address.firstChild, start);
+            range.setEnd(address.firstChild, start + word.length);
+            return range.getBoundingClientRect().top;
+        };
+        const wordsWrap = Math.abs(wordTop('KRATON') - addressBounds.top) < 2
+            && wordTop('PASURUAN') > wordTop('KRATON') + 2;
+        position.style.transform = originalTransform;
         return !document.querySelector('[data-print]').disabled && address.scrollWidth <= address.clientWidth + 1
-            && font >= 7.99 && font < 10 && getComputedStyle(address).whiteSpace === 'nowrap';
+            && Math.abs(font - 10) < .05 && getComputedStyle(address).whiteSpace === 'normal'
+            && address.offsetHeight > parseFloat(getComputedStyle(address).lineHeight) * 1.5
+            && addressBounds.right < boundary - 2 && wordsWrap;
     })()`), true);
     assert.equal(await cdp.evaluate(`(() => {
         window.print = () => { window.testPrinted = true; };
@@ -347,7 +371,7 @@ try {
     })()`), true);
     await cdp.evaluate('window.testPrinted = false; window.dispatchEvent(new Event("beforeprint"))');
     assert.equal(await cdp.evaluate('document.querySelector("[data-print]").disabled'), false);
-    report('Longer single-line address fits at a readable size; Print click opens printing and repeated checks stay enabled');
+    report('Address wraps before the approval area at 10pt; Print click and repeated checks stay enabled');
     await cdp.call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await cdp.navigate('index.php'); assert.equal(await cdp.evaluate('document.documentElement.scrollWidth <= innerWidth'), true); await cdp.screenshot('dashboard-mobile.png');
     await cdp.evaluate('document.getElementById("menu-toggle").click()'); assert.equal(await cdp.evaluate('document.getElementById("sidebar").classList.contains("is-open")'), true);

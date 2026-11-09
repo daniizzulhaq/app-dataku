@@ -93,12 +93,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const firstSpecification = content.querySelector('.document-primary .document-value dd');
         const address = content.querySelector('.document-address dd');
-        // Alamat tetap satu baris; sesuaikan hanya alamat sampai paling kecil 8 pt cetak.
+        const approvalRole = content.querySelector('.internal-approval-job');
+        // Alamat mengikuti ukuran huruf dokumen dan membungkus sebelum area pengesahan.
         if (address) {
             address.style.fontSize = `${base}pt`;
-            if (address.scrollWidth > address.clientWidth + 1) {
-                const addressSize = Math.max(base * .8, base * (address.clientWidth - 1) / address.scrollWidth);
-                address.style.fontSize = `${addressSize}pt`;
+            if (approvalRole) {
+                const layoutLeft = element => {
+                    let left = 0;
+                    while (element && element !== content) {
+                        left += element.offsetLeft;
+                        element = element.offsetParent;
+                    }
+                    return left;
+                };
+                const width = layoutLeft(approvalRole) - layoutLeft(address.parentElement) - 2 * 96 / 25.4;
+                if (width > 0) address.parentElement.style.width = `${width}px`;
             }
         }
         const addressTooWide = address && address.scrollWidth > address.clientWidth + 1;
@@ -116,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fitMessage) {
             fitMessage.hidden = fits;
             fitMessage.textContent = fits ? '' : addressTooWide
-                ? 'Alamat terlalu panjang untuk satu baris. Ringkas alamat sebelum mencetak agar tidak menutupi QR.'
+                ? 'Alamat melewati batas area cetak. Ringkas alamat sebelum mencetak.'
                 : ownerOverlapsSpecifications
                 ? 'Nama atau alamat terlalu panjang dan bertumpuk dengan data kendaraan. Ringkas isian tersebut sebelum mencetak; ukuran tulisan dan posisi cetak tetap.'
                 : 'Konten melebihi area kertas atau kolom. Ukuran tulisan dan jarak baris tetap. Ringkas isian yang terlalu panjang sebelum mencetak.';

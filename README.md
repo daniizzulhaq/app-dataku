@@ -87,7 +87,7 @@ Di preview, halaman cetak, atau **Posisi cetak**, pilih kolom lalu klik **Terapk
 
 Percobaan perubahan ke Letter dibatalkan. Ukuran halaman aplikasi kembali **297 × 230 mm**, tanpa mengubah font 10 pt atau koreksi isian sebelumnya.
 
-Preview dan print memakai template yang sama. Penanda kolom hanya tampil di layar. Tanggal penerbitan di atas wilayah tidak ditampilkan. Alamat disesuaikan dari 10 pt hingga paling kecil 8 pt bila perlu agar tetap satu baris sebelum QR. Ukuran huruf kolom lainnya dan jarak baris tetap. Bila isian masih melewati ruang tersedia, cetak diblokir dengan pesan untuk meringkas isian agar data tidak terpotong.
+Preview dan print memakai template yang sama. Penanda kolom hanya tampil di layar. Tanggal penerbitan di atas wilayah tidak ditampilkan. Alamat otomatis turun baris 2 mm sebelum tulisan jabatan pemeriksa, dengan ukuran huruf tetap 10 pt. Enter yang dimasukkan pada alamat juga dipertahankan. Ukuran huruf kolom lainnya dan jarak baris tetap. Bila isian masih melewati ruang tersedia, cetak diblokir dengan pesan untuk meringkas isian agar data tidak terpotong.
 
 ## Struktur
 

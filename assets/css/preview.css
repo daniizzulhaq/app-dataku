@@ -20,6 +20,7 @@
     --secondary-y-adjust:5mm;
     --owner-x:calc(var(--doc-w,230mm) * .17 + var(--layout-inset) + var(--field-x-adjust));
     --owner-y:calc(var(--doc-h,75mm) * .30 + var(--layout-inset) + 1mm);
+    --approval-x:calc(var(--doc-w,230mm) * .635 + var(--layout-inset) + 5mm + var(--field-x-adjust));
     --specs-y:calc(var(--doc-h,75mm) * .52 + var(--layout-inset));
     --field-step:5mm;
 }
@@ -71,8 +72,8 @@
 .document-approval{
     position:absolute;
     top:calc(var(--doc-h,75mm) * .16 + var(--layout-inset) - 2mm);
-    left:calc(var(--doc-w,230mm) * .635 + var(--layout-inset) + 3mm + var(--field-x-adjust));
-    right:calc(26mm + var(--layout-inset) - var(--field-x-adjust) + var(--expiry-x-adjust));
+    left:var(--approval-x);
+    right:calc(24mm + var(--layout-inset) - var(--field-x-adjust) + var(--expiry-x-adjust));
     min-width:0;
 }
 .document-approval,.document-admin-summary{transform:none}
@@ -115,9 +116,9 @@
     overflow-wrap:anywhere;
     white-space:normal;
 }
-/* Panjangkan alamat sampai 2 mm sebelum QR tanpa menggeser kolom identitas. */
-.document-address{width:calc(var(--doc-w,230mm) * .65 + var(--layout-inset) + var(--field-x-adjust) + var(--qr-x-adjust) - var(--owner-x) - 2mm)}
-.document-address dd{white-space:nowrap;overflow-wrap:normal}
+/* Turunkan alamat ke baris berikutnya sebelum area jabatan pemeriksa. */
+.document-address{width:calc(var(--approval-x) - var(--owner-x) - 2mm)}
+.document-address dd{white-space:normal;overflow-wrap:anywhere}
 .document-field-label{
     position:absolute;
     width:1px;

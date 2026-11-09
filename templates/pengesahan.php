@@ -5,7 +5,7 @@ $approvalRole = trim((string) ($vehicle['jabatan_pemeriksa'] ?? ''));
 $approvalRegion = trim((string) ($vehicle['wilayah'] ?? ''));
 $approvalProvince = trim((string) ($vehicle['wilayah_pengesahan'] ?? ''));
 $approvalDate = !empty($vehicle['tanggal_wilayah'])
-    ? str_replace(' ', '-', strtolower(format_date($vehicle['tanggal_wilayah']))) : '';
+    ? (new DateTimeImmutable($vehicle['tanggal_wilayah']))->format('d-F-Y') : '';
 $approvalNrp = trim((string) ($vehicle['nrp_pemeriksa'] ?? ''));
 ?>
 <div class="internal-approval">
