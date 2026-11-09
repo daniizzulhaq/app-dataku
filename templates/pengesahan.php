@@ -10,8 +10,7 @@ $approvalNrp = trim((string) ($vehicle['nrp_pemeriksa'] ?? ''));
 ?>
 <div class="internal-approval">
     <div class="internal-approval-regions">
-        <div class="internal-approval-region"><?= e($approvalRegion) ?><?= $approvalRegion !== '' && $approvalDate !== '' ? ',' : '' ?></div>
-        <?php if ($approvalDate !== ''): ?><div class="internal-approval-date"><?= e($approvalDate) ?></div><?php endif; ?>
+        <div class="internal-approval-region"><span class="internal-approval-region-line"><span class="internal-approval-region-text"><?= e($approvalRegion) ?><?= $approvalRegion !== '' && $approvalDate !== '' ? ',' : '' ?></span><?php if ($approvalDate !== ''): ?><span class="internal-approval-date"><?= e($approvalDate) ?></span><?php endif; ?></span></div>
         <div class="internal-approval-province"><?= e($approvalProvince) ?></div>
     </div>
     <div class="internal-approval-signature-space">

@@ -191,6 +191,8 @@ try {
         const regionRect = region.getBoundingClientRect();
         const provinceRect = province.getBoundingClientRect();
         const dateRect = date.getBoundingClientRect();
+        const regionText = document.querySelector('.internal-approval-region-text');
+        const regionTextRect = regionText.getBoundingClientRect();
         const nameRect = document.querySelector('.internal-approval-content').getBoundingClientRect();
         position.style.transform = originalTransform;
         const centerX = rect => rect.left + rect.width / 2;
@@ -201,10 +203,11 @@ try {
                 return style.fontSize === roleStyle.fontSize && style.fontFamily === roleStyle.fontFamily
                     && style.fontWeight === roleStyle.fontWeight;
             });
-        return region.textContent === 'GRESIK,' && province.textContent === 'JAWA TIMUR'
+        return regionText.textContent === 'GRESIK,' && province.textContent === 'JAWA TIMUR'
             && matchingFonts
             && date.textContent === '08-January-2026'
-            && dateRect.left >= regionRect.right
+            && Math.abs(dateRect.left - regionTextRect.right - 96 / 25.4) < 1
+            && Math.abs(dateRect.top - regionTextRect.top) < 1
             && Math.abs(centerX(regionRect) - centerX(nameRect)) < 1
             && Math.abs(centerX(provinceRect) - centerX(nameRect)) < 1
             && getComputedStyle(date).fontSize === getComputedStyle(region).fontSize
@@ -216,7 +219,7 @@ try {
     assert.ok(preview.includes('<span>D5H7GUSPR</span>'));
     assert.ok(preview.includes('ADMIN &lt;UJI&gt;'));
     assert.equal(await cdp.evaluate(`(() => {
-        return [...document.querySelectorAll('.document-value:not(.document-expiry) dd, .internal-approval-region, .internal-approval-province, .internal-approval-content, .internal-approval-job, .internal-approval-nrp')]
+        return [...document.querySelectorAll('.document-value:not(.document-expiry) dd, .internal-approval-region-text, .internal-approval-province, .internal-approval-content, .internal-approval-job, .internal-approval-nrp')]
             .every(element => element.textContent === element.textContent.toUpperCase());
     })()`), true);
     assert.ok(preview.includes('NRP 00012345'));
@@ -418,7 +421,7 @@ try {
     assert.equal(snapshot().vehicles.find(vehicle => vehicle.id === id).tanggal_wilayah, null);
     response = await request('preview.php?id=' + id); assert.ok(!response.body.includes('<figcaption>'));
     assert.ok(!response.body.includes('class="internal-approval-date"'));
-    assert.ok(response.body.includes('class="internal-approval-region">GRESIK</div>'));
+    assert.ok(response.body.includes('class="internal-approval-region-text">GRESIK</span>'));
     response = await request('print.php?id=' + id); assert.ok(!response.body.includes('<figcaption>')); assert.ok(response.body.includes('D5H7GUSPR'));
     response = await request('edit.php?id=' + id); assert.match(response.body, /id="teks_atas_qr"[^>]*value=""/);
     report('QR caption: editable per vehicle, escaped, uppercase, optional and retained on edit');
